@@ -1,0 +1,41 @@
+{
+  "name": "glue-connectors",
+  "version": "0.0.2",
+  "description": "Connector utils for queueing and storaging",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "yarn lint && yarn format && tsc --build",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test && yarn lint",
+    "preversion": "yarn lint",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "release": "yarn publish",
+    "unrelease": "npm unpublish partier-queue@1.0.0 -f"
+  },
+  "author": {
+    "email": "isaacdecoded@gmail.com",
+    "name": "Isaac Herrera"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/amqplib": "^0.5.13",
+    "@types/jest": "^26.0.4",
+    "jest": "^26.1.0",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.2",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.6"
+  },
+  "files": [
+    "dist/**/*"
+  ]
+}

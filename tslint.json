@@ -1,0 +1,16 @@
+{
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rules": {
+    "interface-over-type-literal": true,
+    "curly": false,
+    "ordered-imports": false,
+    "interface-name": false,
+    "object-literal-sort-keys": false,
+    "max-classes-per-file": false,
+    "no-empty": false,
+    "semicolon": false,
+    "quotemark": false,
+    "arrow-parens": false,
+    "no-shadowed-variable": false
+  }
+}
