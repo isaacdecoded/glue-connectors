@@ -31,6 +31,20 @@ await publisher.stop()
 
 ```
 
+## Tests
+Initialize the following dockers:
+```bash
+sudo docker run --rm -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+```
+Then run the tests:
+```bash
+npm run test
+```
+or
+```bash
+yarn test
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

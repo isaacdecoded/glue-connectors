@@ -15,15 +15,19 @@ export default class extends EventEmitter {
     this.connection = null
   }
 
-  public async start(eventToEmit?: string) {
+  public async start() {
     try {
       assert(this.amqpUrl, 'No amqp url provided in constructor.')
       this.connection = await amqp.connect(this.amqpUrl)
+      if (!this.connection.serverProperties) {
+        throw new Error('Unable to connect with queue server')
+      }
       const channel = await this.connection.createChannel()
       await channel.assertQueue(this.queueName)
       await channel.consume(this.queueName, async (msg) => {
         if (msg) {
-          this.emit(eventToEmit || 'message', msg.content.toString())
+          const parsedMsg = JSON.parse(msg.content.toString())
+          this.emit(parsedMsg.eventName || 'message', parsedMsg)
           channel.ack(msg)
         }
       })
