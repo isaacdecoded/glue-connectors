@@ -27,11 +27,11 @@ export default class extends EventEmitter {
     }
   }
 
-  public async send(payload: any) {
+  public async send(payload: {}) {
     try {
       assert(this.connection, 'No connection stablished yet.')
       assert(this.channel, 'No channel created yet.')
-      this.channel.sendToQueue(this.queueName, Buffer.from(payload))
+      this.channel.sendToQueue(this.queueName, Buffer.from(JSON.stringify(payload)))
     } catch (e) {
       this.emit('error', e.message)
     }
