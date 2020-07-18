@@ -1,22 +1,38 @@
 import amqp from '../queue/amqp'
+import { MessageData } from '../queue/amqp/publisher'
 
 const amqpUrl = 'amqp://localhost?heartbeat=60'
 const amqpQueue = 'test'
-const testEventName = 'test_message'
-const testMessage = {
-  eventName: testEventName,
-  text: 'this is a testing message :)',
+const testMessage: MessageData = {
+  eventName: 'test_message',
+  payload: {
+    msg: 'this is a testing message :)',
+  },
 }
 
-test('AMQP Publisher', async () => {
-  const publisher = new amqp.Publisher(amqpUrl, amqpQueue)
-  await publisher.start()
-  await publisher.send(testMessage)
-  await publisher.stop()
+const publisher = new amqp.Publisher(amqpUrl, amqpQueue)
+const subscriber = new amqp.Subscriber(amqpUrl, amqpQueue)
+
+test('AMQP Publisher: starts and publish a message', async (done) => {
+  try {
+    await publisher.start()
+    await publisher.send(testMessage)
+    done()
+  } catch (e) {
+    done(e)
+  }
 })
 
-test('AMQP Subscriber', async () => {
-  const subscriber = new amqp.Subscriber(amqpUrl, amqpQueue)
-  await subscriber.start()
-  await subscriber.stop()
+test('AMQP Subscriber', async (done) => {
+  try {
+    subscriber.on(testMessage.eventName, async (msg) => {
+      await publisher.stop()
+      await subscriber.stop()
+      expect(msg).toEqual(testMessage.payload)
+      done()
+    })
+    await subscriber.start()
+  } catch (e) {
+    done(e)
+  }
 })

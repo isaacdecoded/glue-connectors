@@ -11,6 +11,7 @@
     "semicolon": false,
     "quotemark": false,
     "arrow-parens": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "no-console": false
   }
 }

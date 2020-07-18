@@ -1,6 +1,7 @@
 import events from 'events'
 import amqp from 'amqplib'
 import { strict as assert } from 'assert'
+import { MessageData } from './publisher'
 
 const EventEmitter = events.EventEmitter
 
@@ -21,13 +22,14 @@ export default class extends EventEmitter {
       this.connection = await amqp.connect(this.amqpUrl)
       const channel = await this.connection.createChannel()
       await channel.assertQueue(this.queueName)
-      await channel.consume(this.queueName, async (msg) => {
-        if (msg) {
-          const parsedMsg = JSON.parse(msg.content.toString())
-          this.emit(parsedMsg.eventName || 'message', parsedMsg)
-          channel.ack(msg)
+      await channel.consume(this.queueName, async (data) => {
+        if (data) {
+          const msgData: MessageData = JSON.parse(data.content.toString('utf8'))
+          this.emit(msgData.eventName || 'message', msgData.payload)
+          channel.ack(data)
         }
       })
+      console.info('AMQP Subscriber started and consuming...')
     } catch (e) {
       this.emit('error', e.message)
     }
@@ -38,6 +40,7 @@ export default class extends EventEmitter {
       assert(this.connection, 'No connection stablished to be closed.')
       await this.connection.close()
       this.emit('close', 'Connection has been closed.')
+      console.info('AMQP Subscriber stoped.')
     } catch (e) {
       this.emit('error', e.message)
     }

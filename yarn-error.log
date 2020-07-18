@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/share/yarn/bin/yarn.js unrelease
+  /usr/local/bin/node /usr/share/yarn/bin/yarn.js build
 
 PATH: 
   /home/iherrera/bin:/home/iherrera/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/iherrera/Android/Sdk/emulator:/home/iherrera/Android/Sdk/tools:/home/iherrera/Android/Sdk/tools/bin:/home/iherrera/Android/Sdk/platform-tools
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  SyntaxError: /home/iherrera/Projects/Partier/partier-queue/package.json: Unexpected string in JSON at position 632
+  SyntaxError: /home/iherrera/Projects/glue-connectors/package.json: Unexpected token } in JSON at position 860
       at JSON.parse (<anonymous>)
       at /usr/share/yarn/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -23,9 +23,13 @@ Trace:
 
 npm manifest: 
   {
-    "name": "partier-queue",
-    "version": "1.0.0",
-    "description": "Connector module for queue publishing and subscribing",
+    "name": "glue-connectors",
+    "version": "0.0.4",
+    "description": "Connector utils for queueing and storaging",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/isaacdecoded/glue-connectors.git"
+    },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -33,15 +37,19 @@ npm manifest:
       "build": "yarn lint && yarn format && tsc --build",
       "format": "prettier --write \"src/**/*.ts\"",
       "lint": "tslint -p tsconfig.json",
-      "prepare" : "yarn build",
-      "prepublishOnly" : "yarn test && yarn lint",
-      "preversion" : "yarn lint",
-      "version" : "yarn format && git add -A src",
-      "postversion" : "git push && git push --tags",
-      "release": "yarn publish"
-      "unrelease": "npm unpublish partier-queue -f"
+      "prepare": "yarn build",
+      "prepublishOnly": "yarn test && yarn lint",
+      "preversion": "yarn lint",
+      "version": "yarn format && git add -A src",
+      "postversion": "git push && git push --tags",
+      "release": "yarn publish --registry https://registry.npmjs.com",
+      "unrelease": "npm unpublish partier-queue@1.0.0 -f",
+      "start": "node ./dist/index.js",
     },
-    "author": "Isaac Herrera",
+    "author": {
+      "email": "isaacdecoded@gmail.com",
+      "name": "Isaac Herrera"
+    },
     "license": "MIT",
     "devDependencies": {
       "@types/amqplib": "^0.5.13",
@@ -57,7 +65,7 @@ npm manifest:
       "amqplib": "^0.5.6"
     },
     "files": [
-      "lib/**/*"
+      "dist/**/*"
     ]
   }
 

@@ -19,7 +19,8 @@
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
     "release": "yarn publish --registry https://registry.npmjs.com",
-    "unrelease": "npm unpublish partier-queue@1.0.0 -f"
+    "unrelease": "npm unpublish partier-queue@1.0.0 -f",
+    "start": "yarn build && node ./dist/index.js"
   },
   "author": {
     "email": "isaacdecoded@gmail.com",
