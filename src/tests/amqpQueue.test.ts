@@ -26,8 +26,7 @@ test('AMQP Publisher: starts and publish a message', async (done) => {
 test('AMQP Subscriber', async (done) => {
   try {
     subscriber.on(testMessage.eventName, async (msg) => {
-      await publisher.stop()
-      await subscriber.stop()
+      console.log(msg)
       expect(msg).toEqual(testMessage.payload)
       done()
     })
@@ -35,4 +34,9 @@ test('AMQP Subscriber', async (done) => {
   } catch (e) {
     done(e)
   }
+})
+
+afterAll(async () => {
+  await publisher.stop()
+  await subscriber.stop()
 })

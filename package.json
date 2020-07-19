@@ -1,6 +1,6 @@
 {
   "name": "glue-connectors",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Connector utils for queueing and storaging",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test": "jest --config jestconfig.json --silent",
     "build": "yarn lint && yarn format && tsc --build",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
