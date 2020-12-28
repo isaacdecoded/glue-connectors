@@ -1,6 +1,6 @@
 import events from 'events'
 import amqp from 'amqplib'
-import { strict as assert } from 'assert'
+import { strict as strictAssert } from 'assert'
 
 interface JsonArray extends Array<string | number | boolean | Date | Json | JsonArray> {}
 interface Json {
@@ -8,7 +8,8 @@ interface Json {
 }
 
 export interface MessageData {
-  eventName: string
+  id?: string
+  eventName?: string
   payload: Json
 }
 
@@ -32,7 +33,7 @@ export default class extends EventEmitter {
       this.connection = await amqp.connect(this.amqpUrl)
       this.channel = await this.connection.createChannel()
       await this.channel.assertQueue(this.queueName)
-      console.info('AMQP Publisher started and available.')
+      this.emit('start')
     } catch (e) {
       this.emit('error', e.message)
     }
@@ -40,8 +41,8 @@ export default class extends EventEmitter {
 
   public async send(data: MessageData) {
     try {
-      assert(this.connection, 'No connection stablished yet.')
-      assert(this.channel, 'No channel created yet.')
+      strictAssert(this.connection, 'AMQP Publisher: No connection stablished yet.')
+      strictAssert(this.channel, 'AMQP Publisher: No channel created yet.')
       this.channel.sendToQueue(this.queueName, Buffer.from(JSON.stringify(data)))
     } catch (e) {
       this.emit('error', e.message)
@@ -50,10 +51,9 @@ export default class extends EventEmitter {
 
   public async stop() {
     try {
-      assert(this.connection, 'No connection stablished yet.')
+      strictAssert(this.connection, 'AMQP Publisher: No connection stablished yet.')
       await this.connection.close()
-      this.emit('close', 'Connection has been closed.')
-      console.info('AMQP Publisher stoped.')
+      this.emit('close', 'AMQP Publisher: Connection has been closed.')
     } catch (e) {
       this.emit('error', e.message)
     }

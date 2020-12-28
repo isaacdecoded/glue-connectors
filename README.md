@@ -14,6 +14,7 @@ yarn add glue-connectors
 
 ## Usage
 
+### AMQP queueing
 ```js
 import { amqp } from 'glue-connectors'
 
@@ -32,7 +33,7 @@ await publisher.stop()
 ```
 
 ## Tests
-Initialize the following dockers:
+Initialize the following docker:
 ```bash
 sudo docker run --rm -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 ```

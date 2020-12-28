@@ -4,6 +4,7 @@ import { MessageData } from '../queue/amqp/publisher'
 const amqpUrl = 'amqp://localhost?heartbeat=60'
 const amqpQueue = 'test'
 const testMessage: MessageData = {
+  id: 'testId',
   eventName: 'test_message',
   payload: {
     msg: 'this is a testing message :)',
@@ -15,6 +16,7 @@ const subscriber = new amqp.Subscriber(amqpUrl, amqpQueue)
 
 test('AMQP Publisher: starts and publish a message', async (done) => {
   try {
+    publisher.on('error', done)
     await publisher.start()
     await publisher.send(testMessage)
     done()
@@ -23,10 +25,10 @@ test('AMQP Publisher: starts and publish a message', async (done) => {
   }
 })
 
-test('AMQP Subscriber', async (done) => {
+test('AMQP Subscriber: setup event, starts and receive a message', async (done) => {
   try {
-    subscriber.on(testMessage.eventName, async (msg) => {
-      console.log(msg)
+    subscriber.on('error', done)
+    subscriber.on(testMessage.eventName!, async (msg) => {
       expect(msg).toEqual(testMessage.payload)
       done()
     })
@@ -36,7 +38,12 @@ test('AMQP Subscriber', async (done) => {
   }
 })
 
-afterAll(async () => {
-  await publisher.stop()
-  await subscriber.stop()
+afterAll(async (done) => {
+  try {
+    await publisher.stop()
+    await subscriber.stop()
+    done()
+  } catch (e) {
+    done(e)
+  }
 })
