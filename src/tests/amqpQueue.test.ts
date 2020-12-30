@@ -1,6 +1,7 @@
 import amqp from '../queue/amqp'
 import { MessageData } from '../queue/amqp/publisher'
 
+const { Subscriber, Publisher } = amqp
 const amqpUrl = 'amqp://localhost?heartbeat=60'
 const amqpQueue = 'test'
 const testMessage: MessageData = {
@@ -11,8 +12,8 @@ const testMessage: MessageData = {
   },
 }
 
-const publisher = new amqp.Publisher(amqpUrl, amqpQueue)
-const subscriber = new amqp.Subscriber(amqpUrl, amqpQueue)
+const publisher = new Publisher(amqpUrl, amqpQueue)
+const subscriber = new Subscriber(amqpUrl, amqpQueue)
 
 test('AMQP Publisher: starts and publish a message', async (done) => {
   try {
