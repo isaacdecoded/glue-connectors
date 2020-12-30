@@ -2,6 +2,8 @@ import redis, { RedisClient } from 'redis'
 import { promisify } from 'util'
 import { strict as strictAssert } from 'assert'
 
+const DEFAULT_EX = 60 * 60 * 24
+
 export default class {
   private readonly client: RedisClient
   private readonly host: string
@@ -23,16 +25,16 @@ export default class {
     return `${this.host}:${this.port}`
   }
 
-  public async store(key: string, data: string | object) {
-    if (typeof data === 'object') {
-      data = JSON.stringify(data)
-    }
-    const setAsync = promisify(this.client.set).bind(this.client)
-    return await setAsync(key, data)
-      .then(() => true)
-      .catch((e) => {
-        throw e
-      })
+  public async store(key: string, data: string | object, expires?: number) {
+    await new Promise((resolve, reject) => {
+      this.client.set(
+        key,
+        typeof data === 'object' ? JSON.stringify(data) : data,
+        'EX',
+        expires || DEFAULT_EX,
+        err => err ? reject(err) : resolve(true)
+      )
+    })
   }
 
   public async retrieve(key: string) {

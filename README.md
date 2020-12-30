@@ -44,7 +44,7 @@ await publisher.stop()
 import { redis } from 'glue-connectors'
 
 const redisClient = new redis.Client('REDIS_SERVER_HOST', REDIS_SERVER_PORT, [REDIS_SERVER_PASSWORD])
-await redisClient.store('KEY', 'STRING_OR_OBJECT_VALUE')
+await redisClient.store('KEY', 'STRING_OR_OBJECT_VALUE', [SECONDS_UNTIL_EXPIRES])
 const STRING_OR_OBJECT_VALUE = await redisClient.retrieve('KEY')
 
 // to close connection. Returns true when succeed
