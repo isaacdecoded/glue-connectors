@@ -21,9 +21,9 @@ import { amqp } from 'glue-connectors'
 const { Subscriber, Publisher } = amqp
 
 const subscriber = new Subscriber('AMQP_URL', 'QUEUE_NAME')
-subscriber.on('SOME_EVENT_NAME', async ({ eventName, payload }) => {
+subscriber.on('SOME_EVENT_NAME', async (payload) => {
   // process the event message data
-  console.log({ eventName, payload })
+  console.log(payload)
 })
 await subscriber.start()
 

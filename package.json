@@ -1,6 +1,6 @@
 {
   "name": "glue-connectors",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Connector utils for queueing and storaging",
   "repository": {
     "type": "git",
