@@ -1,6 +1,6 @@
 {
   "name": "glue-connectors",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Connector utils for queueing and storaging",
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/amqplib": "^0.5.13",
     "@types/jest": "^26.0.4",
+    "@types/redis": "^2.8.28",
     "jest": "^26.1.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.2",
@@ -38,7 +39,8 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
-    "amqplib": "^0.5.6"
+    "amqplib": "^0.5.6",
+    "redis": "^3.0.2"
   },
   "files": [
     "dist/**/*"
