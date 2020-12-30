@@ -36,6 +36,7 @@ await publisher.stop()
 Initialize the following docker:
 ```bash
 sudo docker run --rm -it --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+sudo docker run --rm -it --name my-redis -p 6379:6379 redis
 ```
 Then run the tests:
 ```bash
