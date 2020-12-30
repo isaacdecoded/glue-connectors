@@ -28,9 +28,11 @@ export default class {
       data = JSON.stringify(data)
     }
     const setAsync = promisify(this.client.set).bind(this.client)
-    return await setAsync(key, data).then(() => true).catch((e) => {
-      throw e
-    })
+    return await setAsync(key, data)
+      .then(() => true)
+      .catch((e) => {
+        throw e
+      })
   }
 
   public async retrieve(key: string) {
@@ -49,19 +51,23 @@ export default class {
 
   public async clean() {
     const flushAsync = promisify(this.client.flushall).bind(this.client)
-    return await flushAsync() === 'OK'
+    return (await flushAsync()) === 'OK'
   }
 
   public async close(): Promise<boolean> {
     strictAssert(this.client.connected, 'Redis Client: No connection stablished to be closed.')
     const quitAsync = promisify(this.client.quit).bind(this.client)
-    return await quitAsync() === 'OK'
+    return (await quitAsync()) === 'OK'
   }
 
   private checkJson(text: string) {
-    if (/^[\],:{}\s]*$/.test(text.replace(/\\["\\\/bfnrtu]/g, '@').
-      replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
-      replace(/(?:^|:|,)(?:\s*\[)+/g, ''))
+    if (
+      /^[\],:{}\s]*$/.test(
+        text
+          .replace(/\\["\\\/bfnrtu]/g, '@')
+          .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+          .replace(/(?:^|:|,)(?:\s*\[)+/g, ''),
+      )
     ) {
       return true
     }

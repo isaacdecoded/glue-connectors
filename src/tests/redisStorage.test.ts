@@ -1,9 +1,6 @@
 import redis from '../storage/redis'
 
-const redisClient = new redis.Client(
-  'localhost',
-  6379,
-)
+const redisClient = new redis.Client('localhost', 6379)
 const stringValue = 'redis glue-connector test'
 const objectValue = {
   name: 'John Doe',
