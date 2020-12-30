@@ -21,15 +21,18 @@ import { amqp } from 'glue-connectors'
 const { Subscriber, Publisher } = amqp
 
 const subscriber = new Subscriber('AMQP_URL', 'QUEUE_NAME')
-subscriber.on('SOME_EVENT_NAME', async (data) => {
-  // treat the message data
-  console.log(data)
+subscriber.on('SOME_EVENT_NAME', async ({ eventName, payload }) => {
+  // process the event message data
+  console.log({ eventName, payload })
 })
 await subscriber.start()
 
 const publisher = new Publisher('AMQP_URL', 'QUEUE_NAME')
 await publisher.start()
-await publisher.send('MESSAGE_STRING_OR_OBJECT')
+await publisher.send({
+  eventName: 'SOME_EVENT_NAME',
+  payload: 'MESSAGE_STRING_OR_OBJECT',
+})
 
 // to stop connections. Emits 'close' event when succeed
 await subscriber.stop()
