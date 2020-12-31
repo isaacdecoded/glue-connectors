@@ -27,16 +27,13 @@ export default class {
 
   public async store(key: string, data: string | object, expires?: number) {
     await new Promise((resolve, reject) => {
-      this.client.set(
-        key,
-        typeof data === 'object' ? JSON.stringify(data) : data,
-        'EX',
-        expires || DEFAULT_EX,
-        err => err ? reject(err) : resolve(true)
+      this.client.set(key, typeof data === 'object' ? JSON.stringify(data) : data, 'EX', expires || DEFAULT_EX, (err) =>
+        err ? reject(err) : resolve(true),
       )
     })
   }
 
+  public async retrieve<T>(key: string): Promise<T>
   public async retrieve(key: string) {
     const getAsync = promisify(this.client.get).bind(this.client)
     return await getAsync(key)
