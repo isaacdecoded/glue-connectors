@@ -21,14 +21,23 @@ export default class {
     this.client.once('connect', () => console.log('Redis client succesfully connected.'))
   }
 
+  /**
+   * Returns current connection host and port in format: "host:port"
+   */
   public getUrl() {
     return `${this.host}:${this.port}`
   }
 
-  public async store(key: string, data: string | object, expires?: number) {
+  public async store<T>(key: string, data: T, expires?: number): Promise<void>
+  public async store(key: string, data: string | number | object, expires?: number): Promise<void> {
+    strictAssert(data, `Invalid parameter "data": cannot be undefined nor null`)
     await new Promise((resolve, reject) => {
-      this.client.set(key, typeof data === 'object' ? JSON.stringify(data) : data, 'EX', expires || DEFAULT_EX, (err) =>
-        err ? reject(err) : resolve(true),
+      this.client.set(
+        key,
+        typeof data === 'object' ? JSON.stringify(data) : data.toString(),
+        'EX',
+        expires || DEFAULT_EX,
+        (err) => (err ? reject(err) : resolve(true)),
       )
     })
   }
@@ -48,6 +57,15 @@ export default class {
       })
   }
 
+  public async remove(key: string) {
+    await new Promise((resolve, reject) => {
+      this.client.del(key, (err, v) => (err ? reject(err) : resolve(v)))
+    })
+  }
+
+  /**
+   * Exec flushall removing all keys from all Redis databases.
+   */
   public async clean() {
     const flushAsync = promisify(this.client.flushall).bind(this.client)
     return (await flushAsync()) === 'OK'
