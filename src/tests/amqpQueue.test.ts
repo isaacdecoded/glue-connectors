@@ -4,7 +4,7 @@ import { MessageData } from '../queue/amqp/publisher'
 const { Subscriber, Publisher } = amqp
 const amqpUrl = 'amqp://localhost?heartbeat=60'
 const amqpQueue = 'test'
-const testMessage: MessageData = {
+const testMessage: MessageData<object> = {
   id: 'testId',
   eventName: 'test_message',
   payload: {

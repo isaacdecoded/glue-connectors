@@ -29,12 +29,12 @@ export default class extends EventEmitter {
       await this.channel.assertQueue(this.queueName)
       await this.channel.consume(this.queueName, async (data) => {
         if (data) {
-          const msgData: MessageData = JSON.parse(data.content.toString('utf8'))
+          const msgData: MessageData<object> = JSON.parse(data.content.toString('utf8'))
           if (!msgData.id) {
             msgData.id = crypto.randomBytes(8).toString('hex')
           }
-          this.emit(msgData.eventName || 'message', msgData.payload)
           this._messageMapper.set(msgData.id, data)
+          this.emit(msgData.eventName || 'message', msgData.payload)
         }
       })
       this.emit('start')

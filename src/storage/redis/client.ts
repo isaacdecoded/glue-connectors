@@ -2,7 +2,7 @@ import redis, { RedisClient } from 'redis'
 import { promisify } from 'util'
 import { strict as strictAssert } from 'assert'
 
-const DEFAULT_EX = 60 * 60 * 24
+const DEFAULT_EX = 60 * 60 * 24 // One day in seconds
 
 export default class {
   private readonly client: RedisClient
