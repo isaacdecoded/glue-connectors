@@ -7,10 +7,10 @@ interface Json {
   [x: string]: string | number | boolean | Date | Json | JsonArray
 }
 
-export interface MessageData {
+export interface MessageData<T> {
   id?: string
   eventName?: string
-  payload: Json
+  payload: T
 }
 
 const EventEmitter = events.EventEmitter
@@ -39,7 +39,8 @@ export default class extends EventEmitter {
     }
   }
 
-  public async send(data: MessageData) {
+  public send(data: MessageData<object>): void
+  public send<T>(data: MessageData<T>): void {
     try {
       strictAssert(this.connection, 'AMQP Publisher: No connection stablished yet.')
       strictAssert(this.channel, 'AMQP Publisher: No channel created yet.')
