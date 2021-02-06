@@ -2,11 +2,6 @@ import events from 'events'
 import amqp from 'amqplib'
 import { strict as strictAssert } from 'assert'
 
-interface JsonArray extends Array<string | number | boolean | Date | Json | JsonArray> {}
-interface Json {
-  [x: string]: string | number | boolean | Date | Json | JsonArray
-}
-
 export interface MessageData<T> {
   id?: string
   eventName?: string
@@ -39,8 +34,8 @@ export default class extends EventEmitter {
     }
   }
 
-  public send(data: MessageData<object>): void
-  public send<T>(data: MessageData<T>): void {
+  public send<T>(data: MessageData<T>): void
+  public send(data: MessageData<object>): void {
     try {
       strictAssert(this.connection, 'AMQP Publisher: No connection stablished yet.')
       strictAssert(this.channel, 'AMQP Publisher: No channel created yet.')
