@@ -1,10 +1,13 @@
 import crypto from 'crypto'
-import events from 'events'
+import { EventEmitter } from 'events'
 import amqp from 'amqplib'
 import { strict as strictAssert } from 'assert'
 import { MessageData } from './publisher'
 
-const EventEmitter = events.EventEmitter
+export interface MessagePayload {
+  id: string
+  [x: string]: string | string[] | number | number[] | object | object[]
+}
 
 export default class extends EventEmitter {
   private readonly amqpUrl: string
@@ -29,13 +32,19 @@ export default class extends EventEmitter {
       await this.channel.assertQueue(this.queueName)
       await this.channel.consume(this.queueName, async (data) => {
         if (data) {
-          const msgData: MessageData<object> = JSON.parse(data.content.toString('utf8'))
-          if (!msgData.id) {
-            msgData.id = crypto.randomBytes(8).toString('hex')
+          const msgData: MessageData<MessagePayload> = JSON.parse(data.content.toString('utf8'))
+          const { eventName, payload } = msgData
+          if (!payload && this.channel) {
+            return this.channel.ack(data)
           }
-          this._messageMapper.set(msgData.id, data)
-          this.emit(msgData.eventName || 'message', msgData.payload)
+          if (!payload.id) {
+            payload.id = crypto.randomBytes(8).toString('hex')
+          }
+          this._messageMapper.set(payload.id, data)
+          this.emit(eventName || 'message', payload)
         }
+      }, {
+        noAck: true
       })
       this.emit('start')
     } catch (e) {

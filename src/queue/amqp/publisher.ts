@@ -1,14 +1,11 @@
-import events from 'events'
+import { EventEmitter } from 'events'
 import amqp from 'amqplib'
 import { strict as strictAssert } from 'assert'
 
 export interface MessageData<T> {
-  id?: string
   eventName?: string
   payload: T
 }
-
-const EventEmitter = events.EventEmitter
 
 export default class extends EventEmitter {
   private readonly amqpUrl: string
