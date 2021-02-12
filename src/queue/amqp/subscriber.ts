@@ -30,22 +30,26 @@ export default class extends EventEmitter {
       this.connection = await amqp.connect(this.amqpUrl)
       this.channel = await this.connection.createChannel()
       await this.channel.assertQueue(this.queueName)
-      await this.channel.consume(this.queueName, async (data) => {
-        if (data) {
-          const msgData: MessageData<MessagePayload> = JSON.parse(data.content.toString('utf8'))
-          const { eventName, payload } = msgData
-          if (!payload && this.channel) {
-            return this.channel.ack(data)
+      await this.channel.consume(
+        this.queueName,
+        async (data) => {
+          if (data) {
+            const msgData: MessageData<MessagePayload> = JSON.parse(data.content.toString('utf8'))
+            const { eventName, payload } = msgData
+            if (!payload && this.channel) {
+              return this.channel.ack(data)
+            }
+            if (!payload.id) {
+              payload.id = crypto.randomBytes(8).toString('hex')
+            }
+            this._messageMapper.set(payload.id, data)
+            this.emit(eventName || 'message', payload)
           }
-          if (!payload.id) {
-            payload.id = crypto.randomBytes(8).toString('hex')
-          }
-          this._messageMapper.set(payload.id, data)
-          this.emit(eventName || 'message', payload)
-        }
-      }, {
-        noAck: true
-      })
+        },
+        {
+          noAck: true,
+        },
+      )
       this.emit('start')
     } catch (e) {
       this.emit('error', e.message)
